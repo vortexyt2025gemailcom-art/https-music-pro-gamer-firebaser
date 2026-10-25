@@ -5,237 +5,455 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mi Música</title>
 <style>
-*{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
-:root{--bg:#efeae2;--p:#fff;--hd:#008069;--tx:#111b21;--sc:#667781;--ac:#00a884;--me:#d9fdd3;--ot:#fff;--ln:#e9edef;color-scheme:light dark}
-@media(prefers-color-scheme:dark){:root{--bg:#0b141a;--p:#111b21;--hd:#202c33;--tx:#e9edef;--sc:#8696a0;--me:#005c4b;--ot:#202c33;--ln:#222d34}}
+*{box-sizing:border-box;margin:0}
+:root{--hd:#008069;--bg:#efeae2;--p:#fff;--tx:#111b21;--sc:#667781;--ac:#00a884;--me:#d9fdd3;--ln:#e9edef;--ot:#fff;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root{--hd:#202c33;--bg:#0b141a;--p:#111b21;--tx:#e9edef;--sc:#8696a0;--me:#005c4b;--ln:#222d34;--ot:#202c33}}
 html,body{height:100%;overflow:hidden}
-body{font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--p);color:var(--tx)}
+body{font:16px/1.4 system-ui,-apple-system,sans-serif;background:var(--p);color:var(--tx)}
 button,input{font:inherit}button{cursor:pointer}
-input{width:100%;padding:12px 14px;border:1px solid var(--ln);border-radius:10px;background:var(--p);color:var(--tx)}
-#music,#app{position:fixed;inset:0;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-#music{background:var(--p)}#app{z-index:10;background:var(--bg)}
-header{background:var(--hd);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:18px}
-header b{flex:1}header button{background:none;border:0;color:#fff;font-size:20px}
-header .pill{font-size:14px;background:#fff3;border-radius:20px;padding:6px 12px}
-.hd{display:flex;align-items:center;gap:10px;flex:1}.hd small{display:block;font-size:12px;font-weight:400;opacity:.85}
-.pri,.row button{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-weight:600}
-.sec,.row button:not(:first-child){background:var(--ln);color:var(--tx);border:0;border-radius:10px;padding:11px 16px;font-weight:600}
-#hid{position:fixed;top:0;right:0;width:60px;height:60px;opacity:0;z-index:5;border:0;background:none}
-.up{display:block;margin:12px 16px;text-align:center;cursor:pointer}
-#pl{flex:1;overflow:auto;list-style:none;padding:0}
-#pl li{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--ln);cursor:pointer}
-#pl span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#pl .on{color:var(--ac);font-weight:700}#pl .em{justify-content:center;color:var(--sc);cursor:default}
-#pl li button{background:none;border:0;color:var(--sc)}
-#pb{padding:10px 16px;border-top:1px solid var(--ln);display:flex;flex-direction:column;gap:6px}
-#now{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#sk{padding:0;border:0;background:none;accent-color:var(--ac)}
-.ctl{display:flex;justify-content:space-between;align-items:center}
-.ctl button{background:none;border:0;font-size:26px;color:var(--tx)}
-#rp{font-size:13px!important;color:var(--sc)!important}
-#rs{background:none;border:0;color:#d93025;padding:12px;font-size:14px;text-decoration:underline}
-#modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:20px;z-index:99}
-#modal.on{display:flex}
-.box{background:var(--p);color:var(--tx);border-radius:14px;padding:20px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px}
-.box h3{font-size:17px}.box h3 small{display:block;font-size:14px;font-weight:400;color:var(--sc);margin-top:6px}
-.row{display:flex;gap:8px;justify-content:flex-end}
-.pad{padding:16px;display:flex;flex-direction:column;gap:14px;overflow:auto}
-.fm{display:flex;flex-direction:column;gap:12px}.pad small{color:var(--sc);font-size:13px}
-.tabs{display:flex}.tabs button{flex:1;padding:10px;background:none;border:0;border-bottom:3px solid var(--ln);color:var(--sc);font-weight:600}
-.tabs .on{color:var(--ac);border-color:var(--ac)}
+input{width:100%;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--p);color:var(--tx)}
+small{color:var(--sc)}
+.scr{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;background:var(--p);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#app{background:var(--bg)}
+header{background:var(--hd);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;flex:none}
+header b{flex:1;font-size:18px}
+header button{background:none;border:0;color:#fff;font-size:20px}
+header .pill{background:#ffffff33;border-radius:20px;padding:6px 12px;font-size:14px;color:#fff;border:0}
+.btn,.btn2{border:0;border-radius:10px;padding:12px 16px;font-weight:600}
+.btn{background:var(--ac);color:#fff}.btn2{background:var(--ln);color:var(--tx)}
 .scroll{flex:1;overflow:auto}
-.li{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--p);border-bottom:1px solid var(--ln);cursor:pointer}
-.li div:last-child{min-width:0}.li small{display:block;color:var(--sc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.av{width:46px;height:46px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;object-fit:cover;flex:none}
-header .av{width:38px;height:38px}.av.big{width:110px;height:110px;font-size:44px}
+.pad{padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto;flex:1}
+.fm{display:flex;flex-direction:column;gap:12px}
+.tabs{display:flex}
+.tabs button{flex:1;padding:10px;background:none;border:0;border-bottom:3px solid var(--ln);color:var(--sc);font-weight:600}
+.tabs .on{color:var(--ac);border-color:var(--ac)}
+.li{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ln);cursor:pointer;background:var(--p)}
+.li div{min-width:0;flex:1}
+.li small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{width:46px;height:46px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;object-fit:cover;flex:none;font-size:18px}
+.av.big{width:120px;height:120px;font-size:48px}
 .em{padding:32px 20px;text-align:center;color:var(--sc)}
 .pf{display:flex;flex-direction:column;align-items:center;gap:10px;padding:28px 20px;text-align:center}
-.pf code{font-size:20px;background:var(--p);padding:8px 12px;border-radius:8px;word-break:break-all}.pf small{color:var(--sc)}
-nav{display:flex;background:var(--p);border-top:1px solid var(--ln)}
-nav button{flex:1;padding:12px;background:none;border:0;color:var(--sc);font-weight:600}nav .on{color:var(--ac)}
-#msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:4px}
+.pf code{font-size:18px;background:var(--bg);padding:8px 12px;border-radius:8px}
+.card{display:flex;flex-direction:column;align-items:center;gap:8px}
+nav{display:flex;border-top:1px solid var(--ln);flex:none;background:var(--p)}
+nav button{flex:1;padding:12px;background:none;border:0;color:var(--sc);font-weight:600}
+nav .on{color:var(--ac)}
+.hd{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.hd small{display:block;color:#fffc;font-size:12px}
+.msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
 .m{max-width:80%;padding:6px 9px;border-radius:10px;background:var(--ot);align-self:flex-start;white-space:pre-wrap;word-break:break-word}
 .m.me{background:var(--me);align-self:flex-end}
 .m img,.m video{display:block;max-width:100%;border-radius:8px}
-.tm{float:right;margin:8px 0 0 10px;font-size:11px;color:var(--sc);white-space:nowrap}
-.tm i{font-style:normal;letter-spacing:-4px;margin-left:2px}.tm .bl{color:#53bdeb}
-.bar{display:flex;align-items:center;gap:8px;padding:8px;background:var(--p)}.bar input{flex:1}
-.bar label{font-size:22px;padding:0 4px;cursor:pointer}
-.bar button{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--ac);color:#fff;font-size:18px}
+.tm{float:right;margin:6px 0 0 10px;font-size:11px;color:var(--sc);white-space:nowrap}
+.tk{font-style:normal;letter-spacing:-3px}.tk.bl{color:#53bdeb}
+.bar{display:flex;align-items:center;gap:8px;padding:8px;background:var(--p);flex:none}
+.bar input{flex:1;border-radius:20px}
+.clip{font-size:22px;cursor:pointer}
+.send{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--ac);color:#fff;font-size:18px}
+#music header{justify-content:center}
+#up{margin:12px 16px;text-align:center;cursor:pointer;display:block}
+#pl{list-style:none;flex:1;overflow:auto}
+#pl li{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--ln);cursor:pointer}
+#pl li span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pl li.on{color:var(--ac);font-weight:700}
+#pl li.em{justify-content:center;color:var(--sc);cursor:default}
+#pl li button{background:none;border:0;color:var(--sc)}
+#pb{padding:10px 16px;border-top:1px solid var(--ln);display:flex;flex-direction:column;gap:6px;flex:none}
+#now{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sk{width:100%;accent-color:var(--ac)}
+.ctl{display:flex;justify-content:space-between;align-items:center}
+.ctl button{background:none;border:0;font-size:26px;color:var(--tx)}
+#rp{font-size:13px!important;color:var(--sc)!important}
+#rs{background:none;border:0;color:#d93025;padding:12px;text-decoration:underline;flex:none}
+#hid{position:fixed;top:0;right:0;width:60px;height:60px;opacity:0;z-index:12;border:0;background:none}
+#modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:20px;z-index:99}
+.box{background:var(--p);color:var(--tx);border-radius:14px;padding:20px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px}
+.box h3{font-size:17px}
+.row{display:flex;gap:8px;justify-content:flex-end}
+.row button{border:0;border-radius:10px;padding:10px 16px;font-weight:600}
+.row .btn{background:var(--ac);color:#fff}.row .btn2{background:var(--ln);color:var(--tx)}
 </style>
 </head>
 <body>
-<div id="music">
-<header><b>🎵 Mi Música</b></header>
-<button id="hid" tabindex="-1" aria-hidden="true"></button>
-<label class="pri up">＋ Subir música<input id="up" type="file" accept="audio/*" multiple hidden></label>
-<ul id="pl"></ul>
-<div id="pb">
-<div id="now">Nada reproduciéndose</div>
-<input id="sk" type="range" min="0" max="1000" value="0">
-<div class="ctl"><button id="pv">⏮️</button><button id="pp">▶️</button><button id="nx">⏭️</button><button id="rp">➡️ Seguir</button></div>
-</div>
-<button id="rs">Reiniciar aplicación</button>
-</div>
-<div id="app" hidden></div>
-<div id="modal"></div>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-<script>
-const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
-let auth,db,me=null,P={},W={},U=[],C=[],S={chat:null,docs:[]},T='c',CU=()=>{},HB;
-// ▼▼ PEGA AQUÍ la configuración de tu proyecto de Firebase (ver LEEME.txt) ▼▼
-try{firebase.initializeApp({apiKey:'PEGA_AQUI',authDomain:'PEGA_AQUI',projectId:'PEGA_AQUI',storageBucket:'PEGA_AQUI',appId:'PEGA_AQUI'});auth=firebase.auth();db=firebase.firestore()}catch(e){}
-// ▲▲ ----------------------------------------------------------------- ▲▲
-const TS=()=>firebase.firestore.FieldValue.serverTimestamp();
-const H=async s=>crypto.subtle?[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join(''):'p'+encodeURIComponent(s);
-const M=$('#modal');
-const ask=(t,f=[],b=['OK'])=>new Promise(r=>{
-M.innerHTML=`<div class=box><h3>${t}</h3>${f.map((x,i)=>`<input id=q${i} placeholder="${x[0]}" type=${x[1]||'text'} ${x[2]||''}>`).join('')}<div class=row>${b.map((x,i)=>`<button data-i=${i}>${x}</button>`).join('')}</div></div>`;
-M.className='on';M.querySelector('input')?.focus();
-M.onclick=e=>{const k=e.target.closest('button');if(k){M.className='';r({i:+k.dataset.i,v:f.map((_,i)=>$('#q'+i).value)})}};
-M.onkeydown=e=>{if(e.key=='Enter')M.querySelector('button').click()};
-});
 
-/* ---------- MÚSICA (se guarda en el dispositivo) ---------- */
-const idb=new Promise(r=>{const q=indexedDB.open('mm',1);q.onupgradeneeded=()=>q.result.createObjectStore('s',{keyPath:'id',autoIncrement:true});q.onsuccess=()=>r(q.result)});
-const tx=async(m,f)=>{const o=(await idb).transaction('s',m).objectStore('s');return new Promise(r=>{const q=f(o);q.onsuccess=()=>r(q.result)})};
-const A=new Audio();let L=[],cid=null,rep=0,url='';
-const RP=['➡️ Seguir','🔁 Repetir lista','🔂 Repetir una'],nm=s=>s.n.replace(/\.\w+$/,''),ix=()=>L.findIndex(s=>s.id==cid);
-const list=()=>{$('#pl').innerHTML=L.length?L.map(s=>`<li data-p=${s.id} class="${s.id==cid?'on':''}"><span>${esc(nm(s))}</span><button data-x=${s.id}>✕</button></li>`).join(''):'<li class=em>Sube tu música con el botón de arriba</li>'};
-const lib=async()=>{L=await tx('readonly',o=>o.getAll());list()};
-const play=i=>{const s=L[i];if(!s)return;cid=s.id;URL.revokeObjectURL(url);A.src=url=URL.createObjectURL(s.b);A.play();$('#now').textContent=nm(s);list()};
-const step=d=>{if(L.length){const i=ix();play(i<0?0:(i+d+L.length)%L.length)}};
-A.onended=()=>{const i=ix();if(rep==2){A.currentTime=0;A.play()}else if(i<L.length-1)play(i+1);else if(rep==1)play(0)};
-A.onplay=A.onpause=()=>$('#pp').textContent=A.paused?'▶️':'⏸️';
-A.ontimeupdate=()=>$('#sk').value=A.duration?A.currentTime/A.duration*1000:0;
-$('#sk').oninput=e=>{if(A.duration)A.currentTime=A.duration*e.target.value/1000};
-$('#pp').onclick=()=>{if(!L.length)return;cid==null?play(0):A.paused?A.play():A.pause()};
-$('#pv').onclick=()=>step(-1);$('#nx').onclick=()=>step(1);
-$('#rp').onclick=e=>{rep=(rep+1)%3;e.target.textContent=RP[rep]};
-$('#up').onchange=async e=>{for(const f of e.target.files)await tx('readwrite',o=>o.add({n:f.name,b:f}));e.target.value='';lib()};
-$('#pl').onclick=async e=>{const x=e.target.closest('[data-x]'),p=e.target.closest('[data-p]');
-if(x){const id=+x.dataset.x;await tx('readwrite',o=>o.delete(id));if(id==cid){A.pause();cid=null;$('#now').textContent='Nada reproduciéndose'}lib()}
-else if(p)play(L.findIndex(s=>s.id==p.dataset.p))};
+<div id="music" class="scr">
+  <header><b>🎵 Mi Música</b></header>
+  <button id="hid" aria-hidden="true" tabindex="-1"></button>
+  <label id="up" class="btn">＋ Subir música<input id="upf" type="file" accept="audio/*" multiple hidden></label>
+  <ul id="pl"></ul>
+  <div id="pb">
+    <div id="now">Nada reproduciéndose</div>
+    <input id="sk" type="range" min="0" max="1000" value="0">
+    <div class="ctl"><button id="pv">⏮️</button><button id="pp">▶️</button><button id="nx">⏭️</button><button id="rp">➡️ Seguir</button></div>
+  </div>
+  <button id="rs">Reiniciar aplicación</button>
+</div>
+
+<div id="app" class="scr" hidden></div>
+<div id="modal" hidden></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
+const sha = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
+
+/* ---------- Ventanas emergentes ---------- */
+const M = $('#modal');
+function ask(html, fields = [], btns = ['OK']) {
+  return new Promise(res => {
+    M.innerHTML = `<div class="box">${html}${fields.map((f, i) => `<input id="q${i}" type="${f[1] || 'text'}" placeholder="${esc(f[0])}" ${f[2] || ''} autocomplete="off">`).join('')}<div class="row">${btns.map((b, i) => `<button class="${i == 0 ? 'btn' : 'btn2'}" data-i="${i}">${esc(b)}</button>`).join('')}</div></div>`;
+    M.hidden = false;
+    M.onclick = e => {
+      const k = e.target.closest('[data-i]');
+      if (!k) return;
+      M.hidden = true;
+      res({ i: +k.dataset.i, v: fields.map((_, i) => $('#q' + i).value) });
+    };
+  });
+}
+const msg = t => ask(`<p>${esc(t)}</p>`, [], ['OK']);
+
+/* ---------- MÚSICA (guardada en el dispositivo) ---------- */
+const DB = new Promise((ok, no) => {
+  const q = indexedDB.open('mm', 1);
+  q.onupgradeneeded = () => q.result.createObjectStore('s', { keyPath: 'id', autoIncrement: true });
+  q.onsuccess = () => ok(q.result);
+  q.onerror = () => no(q.error);
+});
+async function dbq(mode, fn) {
+  const db = await DB;
+  return new Promise((ok, no) => {
+    const t = db.transaction('s', mode), r = fn(t.objectStore('s'));
+    t.oncomplete = () => ok(r.result);
+    t.onerror = () => no(t.error);
+  });
+}
+const au = new Audio();
+let L = [], cur = null, mode = 0, url = '';
+const MODES = ['➡️ Seguir', '🔁 Repetir lista', '🔂 Repetir una'];
+async function lib() { L = await dbq('readonly', o => o.getAll()); drawList(); }
+function drawList() {
+  $('#pl').innerHTML = L.length
+    ? L.map(s => `<li class="${cur === s.id ? 'on' : ''}" data-id="${s.id}"><span>${esc(s.n.replace(/\.\w+$/, ''))}</span><button data-del="${s.id}">✕</button></li>`).join('')
+    : '<li class="em">Sube tu música con el botón de arriba</li>';
+}
+function play(i) {
+  const s = L[i]; if (!s) return;
+  cur = s.id;
+  URL.revokeObjectURL(url);
+  url = URL.createObjectURL(s.b);
+  au.src = url; au.play();
+  $('#now').textContent = s.n.replace(/\.\w+$/, '');
+  drawList();
+}
+function step(d) {
+  if (!L.length) return;
+  const i = L.findIndex(s => s.id === cur);
+  play(i < 0 ? 0 : (i + d + L.length) % L.length);
+}
+au.onended = () => {
+  if (mode == 2) { au.currentTime = 0; au.play(); return; }
+  const i = L.findIndex(s => s.id === cur);
+  if (i < L.length - 1) play(i + 1);
+  else if (mode == 1) play(0);
+};
+au.onplay = au.onpause = () => $('#pp').textContent = au.paused ? '▶️' : '⏸️';
+au.ontimeupdate = () => { if (au.duration) $('#sk').value = au.currentTime / au.duration * 1000; };
+$('#sk').oninput = e => { if (au.duration) au.currentTime = au.duration * e.target.value / 1000; };
+$('#pp').onclick = () => { if (!L.length) return; if (cur == null) play(0); else au.paused ? au.play() : au.pause(); };
+$('#pv').onclick = () => step(-1);
+$('#nx').onclick = () => step(1);
+$('#rp').onclick = e => { mode = (mode + 1) % 3; e.target.textContent = MODES[mode]; };
+$('#upf').onchange = async e => {
+  for (const f of e.target.files) await dbq('readwrite', o => o.add({ n: f.name, b: f }));
+  e.target.value = '';
+  lib();
+};
+$('#pl').onclick = async e => {
+  const d = e.target.closest('[data-del]');
+  if (d) {
+    const id = +d.dataset.del;
+    await dbq('readwrite', o => o.delete(id));
+    if (id === cur) { au.pause(); cur = null; $('#now').textContent = 'Nada reproduciéndose'; }
+    return lib();
+  }
+  const li = e.target.closest('li[data-id]');
+  if (li) play(L.findIndex(s => s.id === +li.dataset.id));
+};
 lib();
 
-/* ---------- BOTÓN INVISIBLE + CÓDIGO ---------- */
-$('#hid').onclick=async()=>{
-const c=localStorage.getItem('cod');
-if(!c){
-const a=await ask('Crea tu código de acceso',[['Código','password']],['Continuar','Cancelar']);if(a.i||!a.v[0])return;
-const b=await ask('Repite el código',[['Repite el código','password']],['Confirmar','Cancelar']);if(b.i)return;
-if(a.v[0]!==b.v[0])return ask('Los códigos no coinciden. Inténtalo de nuevo.');
-if((await ask('¿Usted desea añadir este código de acceso a su aplicación?',[],['Sí','No'])).i)return;
-localStorage.setItem('cod',await H(a.v[0]));return ask('Código guardado ✔');
-}
-const a=await ask('Código de acceso',[['Código','password']],['Entrar','Cancelar']);if(a.i)return;
-(await H(a.v[0]))==c?openSecret():ask('Código incorrecto');
+/* ---------- BOTÓN INVISIBLE Y CÓDIGO ---------- */
+$('#hid').onclick = async () => {
+  const saved = localStorage.getItem('cod');
+  if (!saved) {
+    const a = await ask('<h3>Crea tu código de acceso</h3>', [['Código', 'password']], ['Continuar', 'Cancelar']);
+    if (a.i || !a.v[0]) return;
+    const b = await ask('<h3>Repite el código</h3>', [['Repite el código', 'password']], ['Confirmar', 'Cancelar']);
+    if (b.i) return;
+    if (a.v[0] !== b.v[0]) return msg('Los códigos no coinciden. Inténtalo de nuevo.');
+    const c = await ask('<h3>¿Usted desea añadir este código de acceso a su aplicación?</h3>', [], ['Sí', 'No']);
+    if (c.i) return;
+    localStorage.setItem('cod', await sha(a.v[0]));
+    return msg('Código guardado ✔');
+  }
+  const a = await ask('<h3>Código de acceso</h3>', [['Código', 'password']], ['Entrar', 'Cancelar']);
+  if (a.i) return;
+  (await sha(a.v[0])) === saved ? openSecret() : msg('Código incorrecto');
 };
-$('#rs').onclick=async()=>{
-if((await ask('⚠️ Reiniciar aplicación<small>Se borrará TODO lo que tiene la aplicación en este dispositivo: tu música, el código de acceso y la sesión. No se puede deshacer.</small>',[],['Borrar todo','Cancelar'])).i)return;
-try{await auth.signOut()}catch(e){}
-localStorage.clear();await tx('readwrite',o=>o.clear());location.reload()};
+$('#rs').onclick = async () => {
+  const r = await ask('<h3>⚠️ Reiniciar aplicación</h3><p>Se borrará TODO lo que tiene la aplicación en este dispositivo: tu música, tu código de acceso y tu sesión. No se puede deshacer.</p>', [], ['Borrar todo', 'Cancelar']);
+  if (r.i) return;
+  localStorage.clear();
+  await dbq('readwrite', o => o.clear());
+  location.reload();
+};
+
+/* ---------- API (Netlify) ---------- */
+async function api(action, data = {}) {
+  const r = await fetch('/.netlify/functions/api', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action, token: localStorage.getItem('tok') || '', ...data })
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || 'Error de conexión'); e.status = r.status; throw e; }
+  return j;
+}
 
 /* ---------- ÁREA SECRETA: CUENTA Y CHAT ---------- */
-const er=e=>esc(({'auth/invalid-credential':'Correo o código incorrecto','auth/invalid-login-credentials':'Correo o código incorrecto','auth/email-already-in-use':'Ese correo ya tiene una cuenta','auth/weak-password':'El código debe tener mínimo 6 caracteres','auth/invalid-email':'Correo no válido','auth/network-request-failed':'Sin conexión a internet','auth/invalid-api-key':'Falta pegar tu configuración de Firebase en index.html'})[e.code]||e.message);
-const av=(p,c='')=>p.photo?`<img class="av ${c}" src="${esc(p.photo)}">`:`<div class="av ${c}">${esc((p.name||'?')[0].toUpperCase())}</div>`;
-const chId=n=>[me.num,n].sort().join('_');
-const shrink=(f,m)=>new Promise(r=>{const i=new Image();i.onload=()=>{const s=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(i.src);r(c.toDataURL('image/jpeg',.7))};i.src=URL.createObjectURL(f)});
-const stop=()=>{U.forEach(f=>f());CU();CU=()=>{};U=[];W={};P={};C=[];S={chat:null,docs:[]};clearInterval(HB)};
-const exit=()=>{stop();$('#app').hidden=true};
-const beat=()=>me&&document.visibilityState=='visible'&&db.collection('users').doc(me.num).update({seen:TS()}).catch(()=>{});
-const markSeen=()=>document.visibilityState=='visible'&&S.docs.forEach(d=>{const m=d.data();if(m.to==me.num&&m.st<3)d.ref.update({st:3})});
-document.addEventListener('visibilitychange',()=>{if(me&&S.chat)markSeen()});
-const openSecret=()=>{if(!auth)return ask('Falta configurar Firebase (mira LEEME.txt)');$('#app').hidden=false;auth.currentUser?enter(auth.currentUser):authView()};
+const app = $('#app');
+let me = null, tab = 'c', chat = null, timers = [], hb = null;
+const stopT = () => { timers.forEach(clearInterval); timers = []; };
+const startHB = () => { clearInterval(hb); hb = setInterval(() => api('me').catch(() => {}), 30000); };
+const av = (p, c = '') => p.photo
+  ? `<img class="av ${c}" src="${p.photo}" alt="">`
+  : `<div class="av ${c}">${esc((p.name || '?')[0].toUpperCase())}</div>`;
+const shrink = (f, max, q = .7) => new Promise((ok, no) => {
+  const u = URL.createObjectURL(f), i = new Image();
+  i.onload = () => {
+    const s = Math.min(1, max / Math.max(i.width, i.height)), c = document.createElement('canvas');
+    c.width = i.width * s; c.height = i.height * s;
+    c.getContext('2d').drawImage(i, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(u);
+    ok(c.toDataURL('image/jpeg', q));
+  };
+  i.onerror = () => no(new Error('No se pudo leer la imagen'));
+  i.src = u;
+});
+const toData = f => new Promise((ok, no) => {
+  const r = new FileReader();
+  r.onload = () => ok(r.result);
+  r.onerror = no;
+  r.readAsDataURL(f);
+});
 
-const authView=()=>{$('#app').innerHTML=`<header><button data-a=exit>←</button><b>Acceso</b></header><div class=pad>
-<div class=tabs><button data-a=tab data-v=0 class=on>Iniciar sesión</button><button data-a=tab data-v=1>Crear cuenta</button></div>
-<div id=f0 class=fm><input id=le type=email placeholder="Correo electrónico"><input id=lp type=password placeholder="Código (contraseña)"><button class=pri data-a=login>Iniciar sesión</button></div>
-<div id=f1 class=fm hidden><input id=sn type=tel maxlength=24 placeholder="Inventa tu número de acceso al chat"><small>Puedes poner cualquier número, pero necesita 15 dígitos. Ese número te sirve para hablar con otras personas.</small><input id=sm placeholder="Nombre que aparecerá en el chat"><input id=se type=email placeholder="Correo electrónico"><input id=sp type=password placeholder="Código de la cuenta (mínimo 6)"><input id=sq type=password placeholder="Repite el código"><button class=pri data-a=signup>Crear cuenta</button></div></div>`};
-
-async function enter(u){
-try{
-const q=await db.collection('users').where('uid','==',u.uid).limit(1).get();
-if(q.empty)throw Error('No se encontró el perfil de esta cuenta');
-me={uid:u.uid,num:q.docs[0].id,...q.docs[0].data()};
-}catch(e){await auth.signOut();authView();return ask(er(e))}
-stop();beat();HB=setInterval(beat,3e4);watch();home();
+function openSecret() {
+  app.hidden = false;
+  localStorage.getItem('tok') ? boot() : authScreen();
+}
+async function boot() {
+  try {
+    me = (await api('me')).me;
+    startHB(); home();
+  } catch (e) {
+    if (e.status === 401) localStorage.removeItem('tok');
+    authScreen();
+  }
+}
+function afterAuth(r) {
+  localStorage.setItem('tok', r.token);
+  me = r.me;
+  startHB(); home();
 }
 
-const watch=()=>U.push(db.collection('chats').where('uids','array-contains',me.uid).onSnapshot(s=>{
-C=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.lt-a.lt);
-C.forEach(c=>{
-const n=c.nums.find(x=>x!=me.num);
-if(!W['u'+n]){W['u'+n]=1;U.push(db.collection('users').doc(n).onSnapshot(d=>{P[n]=d.data()||{};ui()}))}
-if(!W[c.id]){W[c.id]=1;U.push(db.collection('chats').doc(c.id).collection('msgs').where('to','==',me.num).where('st','==',1).onSnapshot(q=>q.docs.forEach(d=>d.ref.update({st:2}))))}
-});ui()}));
-const ui=()=>{if(!me||$('#app').hidden)return;S.chat?head():$('#bd')&&home()};
+function authScreen() {
+  stopT(); chat = null;
+  app.innerHTML = `<header><button data-go="close">←</button><b>Acceso</b></header>
+  <div class="pad">
+    <div class="tabs"><button class="on" data-tab="0">Iniciar sesión</button><button data-tab="1">Crear cuenta</button></div>
+    <div id="f0" class="fm">
+      <input id="le" type="email" placeholder="Correo electrónico" autocomplete="email">
+      <input id="lp" type="password" placeholder="Código de acceso">
+      <button class="btn" data-go="login">Iniciar sesión</button>
+    </div>
+    <div id="f1" class="fm" hidden>
+      <input id="sn" type="tel" maxlength="24" placeholder="Número de acceso al chat (15 dígitos)">
+      <small>Puedes poner cualquier número de 15 dígitos. Ese número te sirve para hablar con otras personas.</small>
+      <input id="sm" maxlength="40" placeholder="Nombre que aparecerá en el chat">
+      <input id="sp" type="password" placeholder="Código de acceso (mínimo 6)">
+      <input id="sq" type="password" placeholder="Repite el código">
+      <input id="se" type="email" placeholder="Correo electrónico">
+      <button class="btn" data-go="signup">Crear cuenta</button>
+    </div>
+  </div>`;
+}
 
-const chats=()=>C.length?C.map(c=>{const n=c.nums.find(x=>x!=me.num),p=P[n]||{};return `<div class=li data-a=open data-v=${n}>${av(p)}<div><b>${esc(p.name||n)}</b><small>${esc(c.last||'Toca para escribir')}</small></div></div>`}).join(''):'<p class=em>Aún no tienes chats.<br>Toca “＋ Añadir chat” y escribe el número de tu amigo.</p>';
-const prof=()=>`<div class=pf><label>${av(me,'big')}<input id=ph type=file accept="image/*" hidden></label><h2>${esc(me.name)}</h2><small>Toca la foto para cambiarla</small><p>Mi número de chat</p><code>${me.num}</code><button class=pri data-a=share>Compartir código de chat</button><button class=sec data-a=out>Cerrar sesión</button></div>`;
-const home=()=>{S.chat=null;const c=T=='c';$('#app').innerHTML=`<header><button data-a=exit>♪</button><b>${c?'Mensajes':'Perfil'}</b>${c?'<button class=pill data-a=add>＋ Añadir chat</button>':''}</header><div id=bd class=scroll>${c?chats():prof()}</div><nav><button data-a=nav data-v=c class="${c?'on':''}">💬 Mensajes</button><button data-a=nav data-v=p class="${c?'':'on'}">👤 Perfil</button></nav>`};
+function home() {
+  stopT(); chat = null;
+  app.innerHTML = `<header><b>${tab == 'c' ? 'Mensajes' : 'Perfil'}</b>${tab == 'c' ? '<button class="pill" data-go="add">＋ Añadir chat</button>' : ''}</header>
+  <div id="body" class="scroll"></div>
+  <nav>
+    <button data-go="tabc" class="${tab == 'c' ? 'on' : ''}">💬 Mensajes</button>
+    <button data-go="tabp" class="${tab == 'p' ? 'on' : ''}">👤 Perfil</button>
+  </nav>`;
+  if (tab == 'c') { loadChats(); timers.push(setInterval(loadChats, 5000)); }
+  else drawProfile();
+}
 
-const addChat=async()=>{
-const r=await ask('Añadir chat',[['Número de chat de tu contacto (15 dígitos)','tel','maxlength=24']],['Buscar','Cancelar']);if(r.i)return;
-const n=r.v[0].replace(/\D/g,'');
-if(n.length!=15)return ask('El número debe tener 15 dígitos');
-if(n==me.num)return ask('Ese es tu propio número');
-let d;try{d=await db.collection('users').doc(n).get()}catch(e){return ask(er(e))}
-if(!d.exists)return ask('No se encontró ese número');
-const p=d.data();
-if((await ask(`Este es el contacto que buscabas:<div class=li style="padding:12px 0;border:0;background:none">${av(p)}<b>${esc(p.name)}</b></div>`,[],['Aceptar','Cancelar'])).i)return;
-try{await db.collection('chats').doc(chId(n)).set({uids:[me.uid,p.uid],nums:[me.num,n],lt:Date.now()},{merge:true})}catch(e){return ask(er(e))}
-P[n]=p;openChat(n);
+async function loadChats() {
+  if (!$('#body')) return;
+  try {
+    const r = await api('chats');
+    if (!$('#body')) return;
+    $('#body').innerHTML = r.chats.length
+      ? r.chats.map(c => `<div class="li" data-open="${esc(c.peer)}">${av(c.profile)}<div><b>${esc(c.profile.name)}</b><small>${esc(c.last || 'Toca para escribir')}</small></div></div>`).join('')
+      : '<p class="em">Aún no tienes chats.<br>Toca “＋ Añadir chat” y escribe el número de tu amigo.</p>';
+  } catch (e) {}
+}
+
+function drawProfile() {
+  $('#body').innerHTML = `<div class="pf">
+    <label style="cursor:pointer">${av(me, 'big')}<input id="ph" type="file" accept="image/*" hidden></label>
+    <h2>${esc(me.name)}</h2>
+    <small>Toca la foto para cambiarla</small>
+    <p>Mi número de chat</p>
+    <code>${esc(me.num)}</code>
+    <button class="btn" data-go="share">Compartir código de chat</button>
+    <button class="btn2" data-go="logout">Cerrar sesión</button>
+  </div>`;
+}
+
+async function addChat() {
+  const r = await ask('<h3>Añadir chat</h3>', [['Número de chat de tu contacto (15 dígitos)', 'tel', 'maxlength="24"']], ['Buscar', 'Cancelar']);
+  if (r.i) return;
+  const n = r.v[0].replace(/\D/g, '');
+  if (n.length != 15) return msg('El número debe tener 15 dígitos');
+  let p;
+  try { p = (await api('find', { num: n })).profile; } catch (e) { return msg(e.message); }
+  const c = await ask(`<h3>Este es el contacto que buscabas</h3><div class="card">${av(p)}<b>${esc(p.name)}</b><small>${esc(p.num)}</small></div>`, [], ['Aceptar', 'Cancelar']);
+  if (c.i) return;
+  try { await api('accept', { num: n }); openChat(n); }
+  catch (e) { msg(e.message); }
+}
+
+function openChat(peer) {
+  stopT(); chat = peer;
+  app.innerHTML = `<header><button data-go="back">←</button><div id="hd" class="hd"></div></header>
+  <div id="msgs" class="msgs"></div>
+  <div class="bar">
+    <label class="clip">📎<input id="fl" type="file" accept="image/*,video/*" hidden></label>
+    <input id="tx" placeholder="Escribe un mensaje" autocomplete="off">
+    <button class="send" data-go="send">➤</button>
+  </div>`;
+  timers.push(setInterval(() => loadMsgs(false), 2500));
+  loadMsgs(true);
+}
+
+const row = m => {
+  const mine = m.from == me.num;
+  const t = new Date(m.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const body = m.k == 'i' ? `<img src="${m.x}" alt="">`
+    : m.k == 'v' ? `<video src="${m.x}" controls playsinline></video>`
+    : esc(m.x);
+  const ticks = mine ? `<i class="tk ${m.st >= 3 ? 'bl' : ''}">${m.st >= 2 ? '✓✓' : '✓'}</i>` : '';
+  return `<div class="m ${mine ? 'me' : ''}">${body}<span class="tm">${t} ${ticks}</span></div>`;
 };
 
-const head=()=>{const h=$('#hd');if(!h)return;const p=P[S.chat]||{},on=p.seen&&Date.now()-p.seen.toMillis()<75e3;h.innerHTML=`${av(p)}<div><b>${esc(p.name||S.chat)}</b><small>${on?'en línea':'no está en línea'}</small></div>`};
-setInterval(()=>{if(me&&S.chat)head()},2e4);
-const row=m=>{const mine=m.from==me.num;return `<div class="m ${mine?'me':''}">${m.k=='i'?`<img src="${esc(m.x)}">`:m.k=='v'?`<video src="${esc(m.x)}" controls playsinline></video>`:esc(m.x)}<span class=tm>${m.t.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}${mine?` <i class="${m.st>2?'bl':''}">${m.st>1?'✓✓':'✓'}</i>`:''}</span></div>`};
-const openChat=n=>{
-S.chat=n;
-$('#app').innerHTML=`<header><button data-a=back>←</button><div id=hd class=hd></div></header><div id=msgs></div><div class=bar><label>📎<input id=fl type=file accept="image/*,video/*" hidden></label><input id=tx placeholder="Escribe un mensaje" autocomplete=off><button data-a=send>➤</button></div>`;
-head();CU();
-CU=db.collection('chats').doc(chId(n)).collection('msgs').orderBy('t').onSnapshot(s=>{S.docs=s.docs;const el=$('#msgs');if(!el)return;el.innerHTML=s.docs.map(d=>row(d.data({serverTimestamps:'estimate'}))).join('');el.scrollTop=el.scrollHeight;markSeen()});
-};
-const send=(k,x)=>{const r=db.collection('chats').doc(chId(S.chat)),b=db.batch();b.set(r.collection('msgs').doc(),{from:me.num,to:S.chat,k,x,st:1,t:TS()});b.update(r,{last:k=='t'?x.slice(0,40):k=='i'?'📷 Foto':'🎥 Video',lt:Date.now()});b.commit().catch(e=>ask(er(e)))};
-const sendTx=()=>{const i=$('#tx'),x=i.value.trim();if(x){i.value='';send('t',x)}};
+async function loadMsgs(force) {
+  const p = chat; if (!p) return;
+  let r;
+  try { r = await api('messages', { peer: p }); } catch (e) { return; }
+  if (chat !== p) return;
+  const el = $('#msgs'), hd = $('#hd');
+  if (!el || !hd) return;
+  hd.innerHTML = `${av(r.peer)}<div><b>${esc(r.peer.name)}</b><small>${r.peer.online ? 'en línea' : 'no está en línea'}</small></div>`;
+  const key = r.msgs.map(m => m.t + ':' + m.st).join(',');
+  if (el.dataset.k === key) return;
+  const near = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+  el.innerHTML = r.msgs.map(row).join('');
+  el.dataset.k = key;
+  if (force || near) el.scrollTop = el.scrollHeight;
+}
 
-const ACT={exit,
-tab:d=>[0,1].forEach(i=>{$('#f'+i).hidden=i!=d.v;document.querySelectorAll('.tabs button')[i].className=i==d.v?'on':''}),
-login:async()=>{try{enter((await auth.signInWithEmailAndPassword($('#le').value.trim(),$('#lp').value)).user)}catch(e){ask(er(e))}},
-signup:async()=>{
-const n=$('#sn').value.replace(/\D/g,''),nom=$('#sm').value.trim(),em=$('#se').value.trim(),p=$('#sp').value,q=$('#sq').value;
-if(n.length!=15)return ask('El número de chat debe tener 15 dígitos');
-if(!nom)return ask('Escribe el nombre que verán en el chat');
-if(p!==q)return ask('Los códigos no coinciden');
-let c;try{c=await auth.createUserWithEmailAndPassword(em,p)}catch(e){return ask(er(e))}
-try{await db.collection('users').doc(n).set({uid:c.user.uid,name:nom,photo:'',seen:TS()})}
-catch(e){const d=await db.collection('users').doc(n).get().catch(()=>0);await c.user.delete();return ask(d&&d.exists?'Ese número ya está en uso. Inventa otro.':er(e))}
-enter(c.user)},
-nav:d=>{T=d.v;home()},add:addChat,open:d=>openChat(d.v),
-back:()=>{CU();CU=()=>{};S.docs=[];home()},
-send:sendTx,
-share:()=>{const t='Mi código de chat: '+me.num;if(navigator.share)navigator.share({text:t}).catch(()=>{});else{navigator.clipboard?.writeText(me.num);ask('Tu código de chat (copiado):<small>'+me.num+'</small>')}},
-out:async()=>{stop();me=null;await auth.signOut();authView()}};
-$('#app').onclick=e=>{const a=e.target.closest('[data-a]');if(a)ACT[a.dataset.a](a.dataset)};
-$('#app').onkeydown=e=>{if(e.key=='Enter'&&e.target.id=='tx')sendTx()};
-$('#app').onchange=async e=>{
-const f=e.target.files&&e.target.files[0],id=e.target.id;if(!f)return;e.target.value='';
-try{
-if(id=='ph'){const photo=await shrink(f,256);await db.collection('users').doc(me.num).update({photo});me.photo=photo;home()}
-else if(id=='fl'){
-if(f.type.startsWith('video/')){
-if(f.size>3e7)return ask('El video es muy pesado (máximo 30 MB)');
-const t=$('#tx');t.placeholder='Subiendo video…';
-try{const r=firebase.storage().ref('v/'+me.uid+'/'+Date.now());await r.put(f);send('v',await r.getDownloadURL())}
-catch(x){ask('No se pudo subir el video. Activa Firebase Storage (mira LEEME.txt).')}
-t.placeholder='Escribe un mensaje';
-}else send('i',await shrink(f,800));
-}}catch(x){ask(er(x))}};
+async function send(k, x) {
+  await api('send', { to: chat, k, x });
+  loadMsgs(true);
+}
+async function sendText() {
+  const i = $('#tx'); if (!i) return;
+  const x = i.value.trim();
+  if (!x) return;
+  i.value = '';
+  try { await send('t', x); } catch (e) { msg(e.message); }
+}
+
+const ACT = {
+  close() { app.hidden = true; stopT(); clearInterval(hb); },
+  async login() {
+    try { afterAuth(await api('login', { email: $('#le').value, pass: $('#lp').value })); }
+    catch (e) { msg(e.message); }
+  },
+  async signup() {
+    if ($('#sp').value !== $('#sq').value) return msg('Los códigos no coinciden');
+    try {
+      const r = await api('signup', { num: $('#sn').value, name: $('#sm').value, pass: $('#sp').value, email: $('#se').value });
+      tab = 'p';
+      afterAuth(r);
+    } catch (e) { msg(e.message); }
+  },
+  add: addChat,
+  tabc() { tab = 'c'; home(); },
+  tabp() { tab = 'p'; home(); },
+  back() { chat = null; home(); },
+  send: sendText,
+  share() {
+    const t = me.num;
+    if (navigator.share) navigator.share({ text: 'Mi código de chat: ' + t }).catch(() => {});
+    else { navigator.clipboard?.writeText(t); msg('Tu código de chat (copiado): ' + t); }
+  },
+  async logout() {
+    try { await api('logout'); } catch (e) {}
+    localStorage.removeItem('tok');
+    me = null; clearInterval(hb);
+    authScreen();
+  }
+};
+
+app.addEventListener('click', e => {
+  const o = e.target.closest('[data-open]');
+  if (o) return openChat(o.dataset.open);
+  const t = e.target.closest('[data-tab]');
+  if (t) {
+    const i = +t.dataset.tab;
+    $('#f0').hidden = i !== 0; $('#f1').hidden = i !== 1;
+    [...t.parentElement.children].forEach((b, k) => b.className = k === i ? 'on' : '');
+    return;
+  }
+  const g = e.target.closest('[data-go]');
+  if (g && ACT[g.dataset.go]) ACT[g.dataset.go]();
+});
+app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'tx') sendText(); });
+app.addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  e.target.value = '';
+  try {
+    if (e.target.id === 'ph') {
+      const x = await shrink(f, 256, .8);
+      me = (await api('photo', { photo: x })).me;
+      home();
+    } else if (e.target.id === 'fl') {
+      if (f.type.startsWith('video/')) {
+        if (f.size > 3.5e6) return msg('El video es muy pesado (máximo 3.5 MB)');
+        await send('v', await toData(f));
+      } else {
+        await send('i', await shrink(f, 800, .7));
+      }
+    }
+  } catch (x) { msg(x.message); }
+});
 </script>
 </body>
 </html>
