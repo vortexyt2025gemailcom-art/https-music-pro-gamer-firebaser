@@ -29,7 +29,7 @@ header .pill{background:#ffffff33;border-radius:20px;padding:6px 12px;font-size:
 .tabs button{flex:1;padding:10px;background:none;border:0;border-bottom:3px solid var(--ln);color:var(--sc);font-weight:600}
 .tabs .on{color:var(--ac);border-color:var(--ac)}
 .li{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ln);cursor:pointer;background:var(--p)}
-.li div{min-width:0;flex:1}
+.li>div:last-child{min-width:0;flex:1}
 .li small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .av{width:46px;height:46px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;object-fit:cover;flex:none;font-size:18px}
 .av.big{width:120px;height:120px;font-size:48px}
@@ -46,6 +46,7 @@ nav .on{color:var(--ac)}
 .m{max-width:80%;padding:6px 9px;border-radius:10px;background:var(--ot);align-self:flex-start;white-space:pre-wrap;word-break:break-word}
 .m.me{background:var(--me);align-self:flex-end}
 .m img,.m video{display:block;max-width:100%;border-radius:8px}
+.m audio{display:block;max-width:240px}
 .tm{float:right;margin:6px 0 0 10px;font-size:11px;color:var(--sc);white-space:nowrap}
 .tk{font-style:normal;letter-spacing:-3px}.tk.bl{color:#53bdeb}
 .bar{display:flex;align-items:center;gap:8px;padding:8px;background:var(--p);flex:none}
@@ -345,9 +346,10 @@ function openChat(peer) {
   <div class="bar">
     <label class="clip">📎<input id="fl" type="file" accept="image/*,video/*" hidden></label>
     <input id="tx" placeholder="Escribe un mensaje" autocomplete="off">
-    <button class="send" data-go="send">➤</button>
+    <button id="sb" class="send" data-go="send">🎤</button>
   </div>`;
   timers.push(setInterval(() => loadMsgs(false), 2500));
+  updIcon();
   loadMsgs(true);
 }
 
@@ -356,6 +358,7 @@ const row = m => {
   const t = new Date(m.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const body = m.k == 'i' ? `<img src="${m.x}" alt="">`
     : m.k == 'v' ? `<video src="${m.x}" controls playsinline></video>`
+    : m.k == 'a' ? `<audio src="${m.x}" controls></audio>`
     : esc(m.x);
   const ticks = mine ? `<i class="tk ${m.st >= 3 ? 'bl' : ''}">${m.st >= 2 ? '✓✓' : '✓'}</i>` : '';
   return `<div class="m ${mine ? 'me' : ''}">${body}<span class="tm">${t} ${ticks}</span></div>`;
@@ -377,8 +380,8 @@ async function loadMsgs(force) {
   if (force || near) el.scrollTop = el.scrollHeight;
 }
 
-async function send(k, x) {
-  await api('send', { to: chat, k, x });
+async function send(k, x, peer = chat) {
+  await api('send', { to: peer, k, x });
   loadMsgs(true);
 }
 async function sendText() {
@@ -386,7 +389,38 @@ async function sendText() {
   const x = i.value.trim();
   if (!x) return;
   i.value = '';
+  updIcon();
   try { await send('t', x); } catch (e) { msg(e.message); }
+}
+
+let rec = null, recChunks = [];
+function updIcon() {
+  const b = $('#sb'); if (!b) return;
+  b.textContent = rec ? '⏹' : ($('#tx')?.value.trim() ? '➤' : '🎤');
+}
+async function toggleRec() {
+  if (rec) { rec.stop(); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) return msg('Tu navegador no permite grabar audio');
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { return msg('Permite el uso del micrófono para grabar audio'); }
+  const peer = chat;
+  const r = new MediaRecorder(stream);
+  rec = r; recChunks = [];
+  r.ondataavailable = e => { if (e.data.size) recChunks.push(e.data); };
+  r.onstop = async () => {
+    stream.getTracks().forEach(t => t.stop());
+    const blob = new Blob(recChunks, { type: r.mimeType || 'audio/webm' });
+    rec = null;
+    const tx = $('#tx'); if (tx) tx.placeholder = 'Escribe un mensaje';
+    updIcon();
+    if (blob.size < 1000) return;
+    if (blob.size > 3.4e6) return msg('El audio es muy largo. Grábalo más corto.');
+    try { await send('a', await toData(blob), peer); } catch (e) { msg(e.message); }
+  };
+  r.start();
+  const tx = $('#tx'); if (tx) tx.placeholder = 'Grabando… toca ⏹ para enviar';
+  updIcon();
 }
 
 const ACT = {
@@ -407,7 +441,10 @@ const ACT = {
   tabc() { tab = 'c'; home(); },
   tabp() { tab = 'p'; home(); },
   back() { chat = null; home(); },
-  send: sendText,
+  send() {
+    if (rec) return toggleRec();
+    $('#tx')?.value.trim() ? sendText() : toggleRec();
+  },
   share() {
     const t = me.num;
     if (navigator.share) navigator.share({ text: 'Mi código de chat: ' + t }).catch(() => {});
@@ -435,6 +472,7 @@ app.addEventListener('click', e => {
   if (g && ACT[g.dataset.go]) ACT[g.dataset.go]();
 });
 app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'tx') sendText(); });
+app.addEventListener('input', e => { if (e.target.id === 'tx') updIcon(); });
 app.addEventListener('change', async e => {
   const f = e.target.files && e.target.files[0];
   if (!f) return;
