@@ -137,11 +137,12 @@ export default async (req) => {
       if (k === "t") { if (!x.trim() || x.length > 2000) return fail("Mensaje no válido"); }
       else if (k === "i") { if (!x.startsWith("data:image/") || x.length > 1.5e6) return fail("Foto no válida o muy grande"); }
       else if (k === "v") { if (!x.startsWith("data:video/") || x.length > 4.8e6) return fail("Video muy grande (máximo 3.5 MB)"); }
+      else if (k === "a") { if (!x.startsWith("data:audio/") || x.length > 4.8e6) return fail("Audio muy largo"); }
       else return fail("Tipo de mensaje no válido");
       const t = Date.now();
       await put("msg/" + chatId(me.num, p) + "/" + pad(t) + "-" + randomBytes(4).toString("hex"),
         { from: me.num, to: p, k, x, st: 1, t });
-      const last = k === "t" ? x.slice(0, 40) : k === "i" ? "📷 Foto" : "🎥 Video";
+      const last = k === "t" ? x.slice(0, 40) : k === "i" ? "📷 Foto" : k === "a" ? "🎤 Audio" : "🎥 Video";
       for (const [o, pe] of [[me.num, p], [p, me.num]]) {
         const r = await get("inbox/" + o + "/" + pe);
         if (r) { r.last = last; r.lt = t; await put("inbox/" + o + "/" + pe, r); }
@@ -152,3 +153,4 @@ export default async (req) => {
       return fail("Acción no válida");
   }
 };
+                                
